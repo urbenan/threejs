@@ -19,11 +19,50 @@
 
 		<script>
 
+var data="";
+
+function getText(url, callback) // How can I use this callback?
+{
+    var request = new XMLHttpRequest();
+    request.onreadystatechange = function()
+    {
+        if (request.readyState == 4 && request.status == 200)
+        {
+            callback(request.responseText); // Another callback here
+        }
+    }; 
+    request.open('GET', url);
+    request.send();
+}
+
+// function mycallback(data) {
+//   alert(data);
+// }
+
+function mycallback(fileText){
+  // var lineText;
+  // var fileText = data;
+  var lineText=fileText.split("\n");
+  data=fileText.split("\n");
+  init();
+  animate();
+  // lineText=lineText[9].split(" ");
+  // var x = lineText[2];
+  // document.getElementById("demo").innerHTML=x;
+}
+
+window.onload = function () {
+  getText("ant.ply", mycallback); //passing mycallback as a method
+}
+
+
+
+
 			var camera, scene, renderer;
 			var mesh;
 
-			init();
-			animate();
+			// init();
+			// animate();
 
 			function init() {
 			
@@ -53,33 +92,21 @@
 			
 			
 			
-			
-			
-			var geometry = new THREE.BufferGeometry(); // create a simple square shape. We duplicate the top left and bottom right // vertices because each vertex needs to appear once per triangle. 
-			var vertices = new Float32Array( [ -100.0, -100.0, 100.0, 100.0, -100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, -100.0, 100.0, 100.0, -100.0, -100.0, 100.0 ] ); 
-			// itemSize = 3 because there are 3 values (components) per vertex
-			
-			geometry.addAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) ); 
-			
-			// var material = new THREE.MeshBasicMaterial( { color: 0xff0000 } ); 
-			// var mesh = new THREE.Mesh( geometry, material );
-			
-			
 			//This will add a starfield to the background of a scene
 var starsGeometry = new THREE.Geometry();
 
+// getText("ant.ply", mycallback); //passing mycallback as a method
+for(var zeile=11;zeile<=495;zeile++){
 
-for(var x=0;x<=500;x++){
-  for(var y=0;y<=500;y++ ) {
+      lineText=data[zeile].split(" ");
+      // var x = lineText[2];
 
 	  var star = new THREE.Vector3();
-	  star.x = 10*x;
-	  star.y = 10*y;
-	  star.z = 10;
+	  star.x = lineText[0]*1;
+	  star.y = lineText[1]*1;
+	  star.z = lineText[2]*1;
 
 	  starsGeometry.vertices.push( star );
-	}
-
 }
 
 var starsMaterial = new THREE.PointsMaterial( { color: 0x888888 } );
@@ -163,6 +190,10 @@ scene.add( starField );
 			  mesh = new THREE.Mesh( geometry, material );
 			  return mesh;
 			}
+			
+			
+			
+			
 
 		</script>
 
